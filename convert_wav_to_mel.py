@@ -20,7 +20,6 @@ def save_fig():
         cleaned_file = noised_file.replace(noised_path, cleaned_path).replace("noised_", "")
         noised_mdb = get_meldb(noised_file)
         cleaned_mdb = get_meldb(cleaned_file)
-        print(f"{noised_mdb.shape} -> {cleaned_mdb.shape}")
         fig, axes = plt.subplots(2, 1)
         for ax, mdb, title in zip(axes, [noised_mdb, cleaned_mdb], ["noised", "cleaned"]):
             ax.imshow(mdb)
@@ -58,7 +57,7 @@ def wav_to_mel():
 def save_to_zip():
     shutil.make_archive('submit-data', 'zip', '/home/owner/blow/submit')
 
-def check_audio_length():
+def check_audio_length(visualize=False):
     cleaned_path = "./res/blow/audio"
     noised_path = "./wav"
 
@@ -70,17 +69,18 @@ def check_audio_length():
         amp = np.max(np.abs(noised))
         cleaned, sr = librosa.load(cleaned_file)
         cleaned = cleaned[:t_size]*amp
-        librosa.output.write_wav(cleaned_file, cleaned, sr=sr)
+        librosa.output.write_wav(cleaned_file, cleaned, sr=sr, norm=True)
         print(f"wrote {cleaned_file}")
-        # fig, axes = plt.subplots(2, 1)
-        # for ax, wave in zip(axes, [noised, cleaned]):
-        #     ax.plot(wave)
-        # plt.show()
-        # plt.close()
+        if visualize:
+            fig, axes = plt.subplots(2, 1)
+            for ax, wave in zip(axes, [noised, cleaned]):
+                ax.plot(wave)
+            plt.show()
+            plt.close()
 
 if __name__ == '__main__':
-    # check_audio_length()
-    # wav_to_mel()
-    # save_fig()
-    # calc_mse()
+    check_audio_length()
+    wav_to_mel()
+    save_fig()
+    calc_mse()
     save_to_zip()
