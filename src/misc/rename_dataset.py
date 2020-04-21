@@ -4,7 +4,7 @@ import torch
 # Arguments
 parser=argparse.ArgumentParser(description='Renaming script (runs over preprocessed files)')
 parser.add_argument('--dataset',type=str,required=True,help='(default=%(default)s)',
-                    choices=['vctk','librispeech','nsynthp'])
+                    choices=['vctk','librispeech','nsynthp', 'bannam'])
 parser.add_argument('--path',default='',type=str,required=True,help='(default=%(default)s)')
 parser.add_argument('--extension',default='.pt',type=str,required=False,help='(default=%(default)s)')
 parser.add_argument('--execute',action='store_true')
@@ -81,3 +81,9 @@ elif args.dataset=='nsynthp':
 
 # *** Add other options here ***
 
+elif args.dataset=='bannam':
+    for i,fn_old in enumerate(all_fn):
+        if "noised" in fn_old:
+            fn_new=fn_old.replace("_tgt", "")
+            print(i+1,'\t'+fn_old+' ---> '+fn_new)
+            os.rename(fn_old,fn_new)
