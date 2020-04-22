@@ -29,6 +29,10 @@ def frame_shift(data, n_shift, sr=22050):
     data = np.concatenate([head, data, tail])
     return data
 
+def test(data):
+    for speed in [1.05, 0.95]:
+        yield time_stretch(data, speed)
+
 
 if __name__ == '__main__':
     base = './wav'
@@ -40,19 +44,17 @@ if __name__ == '__main__':
         data, sr = librosa.load(file)
 
         for steps in [0.125*x for x in [-2, -1, 1, 2]]:
-            output = pitch_shift(data, steps)
-            aug_method = f"({steps})pitch"
+            pitched = pitch_shift(data, steps)
+            p_shift = f"({steps})pitch"
             if "noised" in file:
                 for i in range(1, 4):
-                    output = frame_shift(output, i)
-                    aug_method += f"-{i}shift"
-                    # for speed in [1.05, 0.95]:
-                    #     aug_method += f-"x{speed}"
-                    #     output = time_stretch(output, speed)
-                    output_fn = f"{base}/{pattern}_{aug_method}-{num}.wav"
-                    librosa.output.write_wav(output_fn, output, sr=22050)
+                    shifted = frame_shift(pitched, i)
+                    f_shift = f"{i}shift"
+
+                    output_fn = f"{base}/{pattern}_{p_shift}-{f_shift}-{num}.wav"
+                    librosa.output.write_wav(output_fn, shifted, sr=22050)
                     print(output_fn)
             else:
-                output_fn = f"{base}/{pattern}_{aug_method}-{num}.wav"
-                librosa.output.write_wav(output_fn, output, sr=22050)
+                output_fn = f"{base}/{pattern}_{p_shift}-{num}.wav"
+                librosa.output.write_wav(output_fn, pitched, sr=22050)
                 print(output_fn)
