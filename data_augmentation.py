@@ -5,6 +5,7 @@ import os
 import glob
 import librosa
 import numpy as np
+import itertools
 
 def time_stretch(data, speed):
     data = data.reshape(1, -1)
@@ -22,33 +23,36 @@ def pitch_shift(data, n_steps):
 def frame_shift(data, n_shift, sr=22050):
     n_frame_div = 5
     frame_length = 5 # [ms]
-    shift_sample = sr * (frame_length/1000) / n_frame_div
-    data = np.concatenate([np.zeros(shift_sample*n_shift), data])
+    shift_sample = int(sr * (frame_length/1000) / n_frame_div)
+    head = np.zeros(shift_sample*n_shift)
+    tail = np.zeros(shift_sample*(n_frame_div-n_shift))
+    data = np.concatenate([head, data, tail])
     return data
 
 
 if __name__ == '__main__':
     base = './wav'
-    search_path = f"{base}/*.wav"
+    search_path = f"{base}_bck/*.wav"
 
     for file in glob.glob(search_path):
         fn = os.path.basename(file).replace(".wav", "").split("_")
         pattern, num = '_'.join(fn[:-1]), fn[-1]
         data, sr = librosa.load(file)
 
-        for speed in [1.05, 0.95]:
-            aug_method = f"x{speed}"
-            data = time_stretch(data, speed)
-
+        for steps in [0.125*x for x in [-2, -1, 1, 2]]:
+            output = pitch_shift(data, steps)
+            aug_method = f"({steps})pitch"
             if "noised" in file:
-                for steps in [-4, -2, 2, 4]:
-                    data = pitch_shift(data, steps)
-                    aug_method += f"({steps})pitch"
-                    # for i in range(1, 5):
-                    #     data = frame_shift(data, i)
-                    #     aug_method += f"-{i}shift"
+                for i in range(1, 4):
+                    output = frame_shift(output, i)
+                    aug_method += f"-{i}shift"
+                    # for speed in [1.05, 0.95]:
+                    #     aug_method += f-"x{speed}"
+                    #     output = time_stretch(output, speed)
                     output_fn = f"{base}/{pattern}_{aug_method}-{num}.wav"
-                    librosa.output.write_wav(output_fn, data, sr=22050)
-
-            output_fn = f"{base}/{pattern}_{aug_method}-{num}.wav"
-            librosa.output.write_wav(output_fn, data, sr=22050)
+                    librosa.output.write_wav(output_fn, output, sr=22050)
+                    print(output_fn)
+            else:
+                output_fn = f"{base}/{pattern}_{aug_method}-{num}.wav"
+                librosa.output.write_wav(output_fn, output, sr=22050)
+                print(output_fn)

@@ -59,7 +59,7 @@ def save_to_zip():
 
 def check_audio_length(visualize=False):
     cleaned_path = "./res/blow/audio"
-    noised_path = "./wav"
+    noised_path = "./wav_bck"
 
     for noised_file in sorted(glob.glob(noised_path + "/noised_*.wav")):
         cleaned_file = os.path.basename(noised_file).replace("tgt_", "").replace(".wav", "")
@@ -69,7 +69,7 @@ def check_audio_length(visualize=False):
         amp = np.max(np.abs(noised))
         cleaned, sr = librosa.load(cleaned_file)
         cleaned = cleaned[:t_size]*amp
-        librosa.output.write_wav(cleaned_file, cleaned, sr=sr, norm=True)
+        librosa.output.write_wav(cleaned_file, cleaned, sr=sr, norm=False)
         print(f"wrote {cleaned_file}")
         if visualize:
             fig, axes = plt.subplots(2, 1)
@@ -79,7 +79,7 @@ def check_audio_length(visualize=False):
             plt.close()
 
 if __name__ == '__main__':
-    check_audio_length()
+    check_audio_length(visualize=True)
     wav_to_mel()
     save_fig()
     calc_mse()
