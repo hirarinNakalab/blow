@@ -13,7 +13,7 @@ Suggested steps are:
 $ pip install -r requirements.txt
 $ python extract_zip.py
 $ python mel_to_audio.py
-$ python resampling.py --method down
+$ python resampling.py --method down --path_in wav_dat
 ```
 
 ### Data Augmentation
@@ -50,6 +50,6 @@ $ bash convert.sh
 After doing this, figure comparing melspectrogram before/after convert.  
 And MSE between those spectrogram is calculated. At last, submit-data.zip will be saved.
 ```
-$ python resampling --method up
+$ python resampling --method up --path_in res/audio/
 $ python convert_wav_to_mel.py
 ```

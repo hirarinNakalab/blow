@@ -18,6 +18,6 @@ if __name__ == '__main__':
         sys.exit(1)
 
     for file in glob.glob(f"{args.path_in}/*.wav"):
-        cmd = cmd.format(file, file).split(" ")
-        subprocess.call(cmd)
+        cmd_list = cmd.format(file, file).split(" ")
+        subprocess.call(cmd_list)
         print(f"{args.method}sampled {file}")
