@@ -17,7 +17,7 @@ $ python mel_to_audio.py
 $ python create_dir.py
 ```
 
-## Data Augmentation
+### Data Augmentation
 ```
 $ python data_augmentation.py --n_pitch_shift 3 --n_stretch 3
 ```
