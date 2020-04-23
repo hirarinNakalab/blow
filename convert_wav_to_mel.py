@@ -1,3 +1,4 @@
+import argparse
 import shutil
 import os
 import glob
@@ -79,7 +80,11 @@ def check_audio_length(visualize=False):
             plt.close()
 
 if __name__ == '__main__':
-    check_audio_length(visualize=True)
+    parser = argparse.ArgumentParser(description='Preprocessing script')
+    parser.add_argument('--visualize', action='store_true')
+    args = parser.parse_args()
+
+    check_audio_length(visualize=args.visualize)
     wav_to_mel()
     save_fig()
     calc_mse()
