@@ -11,7 +11,7 @@ Suggested steps are:
 ## Set up
 ```
 $ pip install -r requirements.txt
-$ python create_dir.py
+$ python extract_zip.py
 $ python mel_to_audio.py
 ```
 

@@ -2,21 +2,13 @@ import glob
 import os
 import librosa
 import numpy as np
-import zipfile
 import shutil
 
 
 if __name__ == '__main__':
-    data_path = "./dist-data.zip"
-    extract_path = data_path.replace(".zip", "")
-    with zipfile.ZipFile(data_path) as zf:
-        zf.extractall(extract_path)
-
-    output_path = "./wav"
+    output_path = "./wav_dat"
     bck_path = "./wav_bck"
-    for path in [output_path, bck_path]:
-        if not os.path.exists(path):
-            os.mkdir(path)
+    extract_path = "./dist-data"
 
     for i, file in enumerate(glob.glob(f"{extract_path}/*/*.npy")):
         mel = np.load(file)

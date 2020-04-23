@@ -42,7 +42,7 @@ def calc_mse():
 def wav_to_mel():
     data_path = "./res/blow/audio"
     noised_path = "original"
-    submit_path = "./submit"
+    submit_path = "submit"
 
     for noised_file in sorted(glob.glob(noised_path + "/*.npy")):
         fn = os.path.basename(noised_file).split('_')[2].replace(".npy", "")
@@ -56,7 +56,7 @@ def wav_to_mel():
         print(f"save {npy_fn}")
 
 def save_to_zip():
-    shutil.make_archive('submit-data', 'zip', '/home/owner/blow/submit')
+    shutil.make_archive('submit-data', 'zip', './submit')
 
 def check_audio_length(visualize=False):
     cleaned_path = "./res/blow/audio"
