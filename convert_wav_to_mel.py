@@ -13,31 +13,21 @@ def get_meldb(filename):
     mel_db = librosa.power_to_db(mel, ref=np.max)
     return mel_db
 
-def save_fig():
-    noised_path = "original"
-    cleaned_path = "submit"
+def melspec(cleaned_file, noised_file):
+    noised_mdb = get_meldb(noised_file)
+    cleaned_mdb = get_meldb(cleaned_file)
+    fig, axes = plt.subplots(2, 1)
+    for ax, mdb, title in zip(axes, [noised_mdb, cleaned_mdb], ["noised", "cleaned"]):
+        ax.imshow(mdb)
+        ax.set_title(title)
+    plt.savefig("./fig/{}.png".format(os.path.basename(noised_file).replace(".npy", "")))
+    plt.close()
 
-    for noised_file in sorted(glob.glob(noised_path+"/*.npy")):
-        cleaned_file = noised_file.replace(noised_path, cleaned_path).replace("noised_", "")
-        noised_mdb = get_meldb(noised_file)
-        cleaned_mdb = get_meldb(cleaned_file)
-        fig, axes = plt.subplots(2, 1)
-        for ax, mdb, title in zip(axes, [noised_mdb, cleaned_mdb], ["noised", "cleaned"]):
-            ax.imshow(mdb)
-            ax.set_title(title)
-        plt.savefig("./fig/{}.png".format(os.path.basename(noised_file).replace(".npy", "")))
-        plt.close()
-
-def calc_mse():
-    noised_path = "original"
-    cleaned_path = "submit"
-
-    for noised_file in sorted(glob.glob(noised_path + "/*.npy")):
-        cleaned_file = noised_file.replace(noised_path, cleaned_path).replace("noised_", "")
-        noised_mel = np.load(noised_file)
-        cleaned_mel = np.load(cleaned_file)
-        score = mean_squared_error(noised_mel, cleaned_mel)
-        print(f"{noised_file} => MSE: {score}")
+def mse(cleaned_file, noised_file):
+    noised_mel = np.load(noised_file)
+    cleaned_mel = np.load(cleaned_file)
+    score = mean_squared_error(noised_mel, cleaned_mel)
+    print(f"{noised_file} => MSE: {score}")
 
 def wav_to_mel():
     data_path = "./res/blow/audio"
@@ -86,6 +76,14 @@ if __name__ == '__main__':
 
     check_audio_length(visualize=args.visualize)
     wav_to_mel()
-    save_fig()
-    calc_mse()
+
+    noised_path = "dist-data/noised_tgt"
+    cleaned_path = "submit"
+
+    for noised_file in sorted(glob.glob(noised_path + "/*.npy")):
+        fn = os.path.basename(noised_file).replace("noised_")
+        cleaned_file = f"{cleaned_path}/{fn}"
+        mse(cleaned_file, noised_file)
+        melspec(cleaned_file, noised_file)
+
     save_to_zip()
