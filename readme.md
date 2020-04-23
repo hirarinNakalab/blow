@@ -5,6 +5,7 @@
 Suggested steps are:
 
 1. Clone repository.
+1. Mark following directories in Pycharm to import .py files (src/models, src/utils)
 1. Create a virtualenv environment (you can use the `requirements.txt` file).
 1. Put dist-data.zip to project root directory (for example `blow/dist-data.zip`)
 1. You can run program using .run file in PyCharm
@@ -33,15 +34,15 @@ python src/misc/rename_dataset.py --dataset bannam --path ../../dat/
 
 To train Blow:
 ```
-python train.py --path_data ../dat --model blow --multigpu --nepochs 100 --base_fn_out ../res/blow --sr 22050
+python src/train.py --path_data ../dat --model blow --multigpu --nepochs 100 --base_fn_out ../res/blow --sr 22050
 ```
 
 ### Convert 
 
 To synthesize all audio with a given learnt model:
 ```
-python synthesize.py --base_fn_model ../res/blow/ --path_out ../res/blow/audio/ --convert --split train+valid --force_source_speaker noised --force_target_speaker raw
-python synthesize.py --base_fn_model ../res/blow/ --path_out ../res/blow/audio/ --convert --split test --force_source_speaker noised --force_target_speaker raw
+python src/synthesize.py --base_fn_model ../res/blow/ --path_out ../res/blow/audio/ --convert --split train+valid --force_source_speaker noised --force_target_speaker raw
+python src/synthesize.py --base_fn_model ../res/blow/ --path_out ../res/blow/audio/ --convert --split test --force_source_speaker noised --force_target_speaker raw
 ```
 
 ### Convert audio in melspectrogram format and save into zip file

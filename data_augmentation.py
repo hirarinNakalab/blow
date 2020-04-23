@@ -7,7 +7,7 @@ import os
 import glob
 import librosa
 import numpy as np
-import sys
+
 
 def time_stretch(data, speed):
     data = data.reshape(1, -1)
@@ -48,13 +48,13 @@ if __name__ == '__main__':
         pattern, num = '_'.join(fn[:-1]), fn[-1]
         data, sr = librosa.load(file)
 
-        for steps in np.linspace(-0.125, 125, args.n_pitch_shift):
+        for steps in np.linspace(-0.125, 0.130, args.n_pitch_shift, endpoint=False):
             pitched = pitch_shift(data, steps)
-            p_shift = f"({steps})pitch"
+            p_shift = f"({steps:.3f})pit"
             if "noised" in file:
-                for n in np.linspace(0.98, 1.02, args.n_stretch):
+                for n in np.linspace(0.98, 1.01, args.n_stretch, endpoint=False):
                     stretched = time_stretch(pitched, n)
-                    n_stretch = f"{n}stretched"
+                    n_stretch = f"{n:.3f}strc"
 
                     output_fn = f"{base}/{pattern}_{p_shift}-{n_stretch}-{num}.wav"
                     librosa.output.write_wav(output_fn, stretched, sr=22050)

@@ -28,4 +28,4 @@ if __name__ == '__main__':
 
     for file in glob.glob(f"{output_path}/*.wav"):
         fn = os.path.basename(file)
-        shutil.copyfile(file, f"{bck_path}/fn")
+        shutil.copyfile(file, f"{bck_path}/{fn}")
