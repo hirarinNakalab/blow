@@ -22,14 +22,14 @@ def time_stretch(data, speed):
 def pitch_shift(data, n_steps):
     return librosa.effects.pitch_shift(data, 22050, n_steps=n_steps)
 
-# def frame_shift(data, n_shift, sr=22050):
-#     n_frame_div = 5
-#     frame_length = 5 # [ms]
-#     shift_sample = int(sr * (frame_length/1000) / n_frame_div)
-#     head = np.zeros(shift_sample*n_shift)
-#     tail = np.zeros(shift_sample*(n_frame_div-n_shift))
-#     data = np.concatenate([head, data, tail])
-#     return data
+def frame_shift(data, n_shift, sr=22050):
+    n_frame_div = 5
+    frame_length = 5 # [ms]
+    shift_sample = int(sr * (frame_length/1000) / n_frame_div)
+    head = np.zeros(shift_sample*n_shift)
+    tail = np.zeros(shift_sample*(n_frame_div-n_shift))
+    data = np.concatenate([head, data, tail])
+    return data
 
 
 
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     parser.add_argument('--n_stretch', default=3, type=int, required=True, help='(default=%(default)s)')
     args = parser.parse_args()
 
-    base = './wav'
+    base = './wav_dat'
     search_path = f"{base}_bck/*.wav"
 
     for file in glob.glob(search_path):
