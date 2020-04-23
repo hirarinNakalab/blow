@@ -29,9 +29,26 @@ def mse(cleaned_file, noised_file):
     score = mean_squared_error(noised_mel, cleaned_mel)
     print(f"{noised_file} => MSE: {score}")
 
-def wav_to_mel():
-    data_path = "./res/blow/audio"
-    noised_path = "original"
+def fix_audio_length(cleaned_path, noised_path, visualize):
+    for noised_file in sorted(glob.glob(noised_path + "/noised_*.wav")):
+        cleaned_file = os.path.basename(noised_file).replace("tgt_", "").replace(".wav", "")
+        cleaned_file = f"{cleaned_path}/{cleaned_file}_to_raw.wav"
+        noised, sr = librosa.load(noised_file)
+        t_size = len(noised)
+        amp = np.max(np.abs(noised))
+        cleaned, sr = librosa.load(cleaned_file)
+        cleaned = cleaned[:t_size] * amp
+        librosa.output.write_wav(cleaned_file, cleaned, sr=sr, norm=False)
+        print(f"wrote {cleaned_file}")
+        if visualize:
+            fig, axes = plt.subplots(2, 1)
+            for ax, wave in zip(axes, [noised, cleaned]):
+                ax.plot(wave)
+            plt.show()
+            plt.close()
+
+def wav_to_mel(noised_path):
+    data_path = "./res/audio"
     submit_path = "submit"
 
     for noised_file in sorted(glob.glob(noised_path + "/*.npy")):
@@ -48,40 +65,23 @@ def wav_to_mel():
 def save_to_zip():
     shutil.make_archive('submit-data', 'zip', './submit')
 
-def check_audio_length(visualize=False):
-    cleaned_path = "./res/blow/audio"
-    noised_path = "./wav_bck"
 
-    for noised_file in sorted(glob.glob(noised_path + "/noised_*.wav")):
-        cleaned_file = os.path.basename(noised_file).replace("tgt_", "").replace(".wav", "")
-        cleaned_file = f"{cleaned_path}/{cleaned_file}_to_raw.wav"
-        noised, sr = librosa.load(noised_file)
-        t_size = len(noised)
-        amp = np.max(np.abs(noised))
-        cleaned, sr = librosa.load(cleaned_file)
-        cleaned = cleaned[:t_size]*amp
-        librosa.output.write_wav(cleaned_file, cleaned, sr=sr, norm=False)
-        print(f"wrote {cleaned_file}")
-        if visualize:
-            fig, axes = plt.subplots(2, 1)
-            for ax, wave in zip(axes, [noised, cleaned]):
-                ax.plot(wave)
-            plt.show()
-            plt.close()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Preprocessing script')
     parser.add_argument('--visualize', action='store_true')
     args = parser.parse_args()
 
-    check_audio_length(visualize=args.visualize)
-    wav_to_mel()
+    cleaned_path = "./res/audio"
+    noised_path = "./wav_bck"
+    fix_audio_length(cleaned_path, noised_path, args.visualize)
 
     noised_path = "dist-data/noised_tgt"
-    cleaned_path = "submit"
+    wav_to_mel(noised_path=noised_path)
 
+    cleaned_path = "submit"
     for noised_file in sorted(glob.glob(noised_path + "/*.npy")):
-        fn = os.path.basename(noised_file).replace("noised_")
+        fn = os.path.basename(noised_file).replace("noised_", "")
         cleaned_file = f"{cleaned_path}/{fn}"
         mse(cleaned_file, noised_file)
         melspec(cleaned_file, noised_file)
