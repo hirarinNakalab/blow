@@ -5,7 +5,8 @@ import os
 import glob
 import librosa
 import numpy as np
-import itertools
+import shutil
+
 
 def time_stretch(data, speed):
     data = data.reshape(1, -1)
@@ -29,9 +30,6 @@ def frame_shift(data, n_shift, sr=22050):
     data = np.concatenate([head, data, tail])
     return data
 
-def test(data):
-    for speed in [1.05, 0.95]:
-        yield time_stretch(data, speed)
 
 
 if __name__ == '__main__':
@@ -39,20 +37,22 @@ if __name__ == '__main__':
     search_path = f"{base}_bck/*.wav"
 
     for file in glob.glob(search_path):
-        fn = os.path.basename(file).replace(".wav", "").split("_")
+        fn = os.path.basename(file)
+        shutil.copyfile(file, f"{base}/{fn}")
+        fn = fn.replace(".wav", "").split("_")
         pattern, num = '_'.join(fn[:-1]), fn[-1]
         data, sr = librosa.load(file)
 
-        for steps in [0.125*x for x in [-2, -1, 1, 2]]:
+        for steps in np.linspace(-0.125, 125, 3):
             pitched = pitch_shift(data, steps)
             p_shift = f"({steps})pitch"
             if "noised" in file:
-                for i in range(1, 4):
-                    shifted = frame_shift(pitched, i)
-                    f_shift = f"{i}shift"
+                for i in np.linspace(0.98, 1.02, 3):
+                    stretched = time_stretch(pitched, i)
+                    n_stretch = f"{i}stretched"
 
-                    output_fn = f"{base}/{pattern}_{p_shift}-{f_shift}-{num}.wav"
-                    librosa.output.write_wav(output_fn, shifted, sr=22050)
+                    output_fn = f"{base}/{pattern}_{p_shift}-{n_stretch}-{num}.wav"
+                    librosa.output.write_wav(output_fn, stretched, sr=22050)
                     print(output_fn)
             else:
                 output_fn = f"{base}/{pattern}_{p_shift}-{num}.wav"
