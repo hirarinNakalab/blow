@@ -13,12 +13,17 @@ Suggested steps are:
 $ pip install -r requirements.txt
 $ python extract_zip.py
 $ python mel_to_audio.py
-$ python resampling.py --method down --path_in wav_dat # downsampling to 16kHz
+```  
+if you use JVS Corpus,
+```
+$ bash get_jvs.sh 
+$ cd wav_dat
+$ bash unify_sr.sh
 ```
 
 ### Data Augmentation
 ```
-$ python data_augmentation.py --path_in down_16k --sr 16000 --n_pitch_shift 3
+$ python data_augmentation.py --path_in 22.05k --sr 22050 --n_pitch_shift 3
 ```
 
 ### Preprocessing
@@ -26,7 +31,7 @@ $ python data_augmentation.py --path_in down_16k --sr 16000 --n_pitch_shift 3
 To preprocess the audio files:
 ```
 $ cd src
-$ python preprocess.py --path_in ../down_16k/ --extension .wav --path_out ../pt_dat/ --sr 16000
+$ python preprocess.py --path_in ../22.05k/ --extension .wav --path_out ../pt_dat/ --sr 22050
 $ python rename_dataset.py --dataset bannam --path ../pt_dat/
 ```
 
@@ -35,7 +40,7 @@ $ python rename_dataset.py --dataset bannam --path ../pt_dat/
 To train Blow:
 ```
 $ cd src
-$ python train.py --path_data ../pt_dat/ --model blow --multigpu --nepochs 100 --base_fn_out ../res/model/blow --sr 16000
+$ python train.py --path_data ../pt_dat/ --model blow --multigpu --nepochs 100 --base_fn_out ../res/model/blow --sr 22050
 ```
 
 ### Convert 
@@ -49,10 +54,9 @@ $ bash convert.sh
 ### Convert audio to melspectrogram and save as zip file
 
 After doing this, figures comparing melspectrogram before/after convert will be saved.  
-And MSE between those spectrogram is calculated. Finally, `./submit-data.zip` will be saved.
+And MSE between those spectrogram is calculated. Finally, `./submit-data.zip` will be saved.  
 ```
-$ python resampling.py --method up --path_in res/audio/
-$ python convert_wav_to_mel.py --path_in up_22.05k --path_compare wav_dat --path_npy dist-data/noised_tgt/
+$ python convert_wav_to_mel.py --path_in 22.05k --path_compare wav_bck --path_npy dist-data/noised_tgt/
 ```
 
 ### Clear Project files
