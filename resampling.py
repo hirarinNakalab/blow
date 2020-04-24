@@ -12,12 +12,19 @@ if __name__ == '__main__':
 
     if args.method == "down":
         cmd = "sox {} -r 16000 {}"
+        output_path = "./down_16k"
     elif args.method == "up":
         cmd = "sox {} -r 22050 {}"
+        output_path = "./up_22.05k"
     else:
         sys.exit(1)
 
-    for file in glob.glob(f"{args.path_in}/*.wav"):
-        cmd_list = cmd.format(file, file).split(" ")
+    if not os.path.exists(output_path):
+        os.mkdir(output_path)
+
+    for in_file in glob.glob(f"{args.path_in}/*.wav"):
+        out_file = os.path.basename(in_file)
+        out_file = f"{output_path}/{out_file}"
+        cmd_list = cmd.format(in_file, out_file).split(" ")
         subprocess.call(cmd_list)
-        print(f"{args.method}sampled {file}")
+        print(f"{args.method}sampled {in_file} to {out_file}")
