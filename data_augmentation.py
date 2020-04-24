@@ -58,8 +58,8 @@ if __name__ == '__main__':
                 # for n in np.linspace(0.98, 1.01, args.n_stretch, endpoint=False):
                 #     stretched = time_stretch(pitched, n)
                 #     n_stretch = f"{n:.3f}strc"
-                output_fn = f"{base}/{pattern}_{p_shift}-{num}.wav"
-                librosa.output.write_wav(output_fn, pitched, sr=22050)
+                output_fn = f"{base}/{pattern}_{num}-{p_shift}.wav"
+                librosa.output.write_wav(output_fn, pitched, sr=args.sr)
                 print(output_fn)
             # else:
             #     output_fn = f"{base}/{pattern}_{p_shift}-{num}.wav"
