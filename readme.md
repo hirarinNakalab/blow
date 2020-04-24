@@ -18,7 +18,7 @@ $ python resampling.py --method down --path_in wav_dat
 
 ### Data Augmentation
 ```
-$ python data_augmentation.py --n_pitch_shift 3 --n_stretch 3
+$ python data_augmentation.py --path_in down_16k --sr 16000 --n_pitch_shift 3
 ```
 
 ### Preprocessing
