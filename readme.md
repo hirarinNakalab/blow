@@ -49,7 +49,7 @@ $ bash convert.sh
 ### Convert audio to melspectrogram and save as zip file
 
 After doing this, figures comparing melspectrogram before/after convert will be saved.  
-And MSE between those spectrogram is calculated. At last, `./submit-data.zip` will be saved.
+And MSE between those spectrogram is calculated. Finally, `./submit-data.zip` will be saved.
 ```
 $ python resampling.py --method up --path_in res/audio/
 $ python convert_wav_to_mel.py --path_in up_22.05k --path_compare wav_dat --path_npy dist-data/noiset_tgt/
