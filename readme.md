@@ -27,7 +27,7 @@ To preprocess the audio files:
 ```
 $ cd src
 $ python preprocess.py --path_in ../down_16k/ --extension .wav --path_out ../pt_dat/ --sr 16000
-$ python python rename_dataset.py --dataset bannam --path ../pt_dat/
+$ python rename_dataset.py --dataset bannam --path ../pt_dat/
 ```
 
 ### Training
@@ -52,7 +52,7 @@ After doing this, figures comparing melspectrogram before/after convert will be 
 And MSE between those spectrogram is calculated. Finally, `./submit-data.zip` will be saved.
 ```
 $ python resampling.py --method up --path_in res/audio/
-$ python convert_wav_to_mel.py --path_in up_22.05k --path_compare wav_dat --path_npy dist-data/noiset_tgt/
+$ python convert_wav_to_mel.py --path_in up_22.05k --path_compare wav_dat --path_npy dist-data/noised_tgt/
 ```
 
 ### Clear Project files

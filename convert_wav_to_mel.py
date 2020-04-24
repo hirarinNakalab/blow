@@ -34,7 +34,7 @@ def fix_audio_length(path_in, path_compare, visualize=False):
         cleaned_file = os.path.basename(noised_file)
         cleaned_file = cleaned_file.replace("tgt_", "").replace(".wav", "")
         cleaned_file = f"{path_in}/{cleaned_file}_to_raw.wav"
-        noised, sr = librosa.load(noised_file, sr=sr)
+        noised, sr = librosa.load(noised_file)
         t_size = len(noised)
         amp = np.max(np.abs(noised))
         cleaned, sr = librosa.load(cleaned_file)
