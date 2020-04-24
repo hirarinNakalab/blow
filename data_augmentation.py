@@ -19,9 +19,6 @@ def time_stretch(data, speed):
     output = output.flatten()
     return output
 
-def pitch_shift(data, n_steps):
-    return librosa.effects.pitch_shift(data, 22050, n_steps=n_steps)
-
 def frame_shift(data, n_shift, sr=22050):
     n_frame_div = 5
     frame_length = 5 # [ms]
@@ -31,6 +28,9 @@ def frame_shift(data, n_shift, sr=22050):
     data = np.concatenate([head, data, tail])
     return data
 
+def pitch_shift(data, n_steps):
+    return librosa.effects.pitch_shift(data, 22050, n_steps=n_steps)
+
 
 
 if __name__ == '__main__':
@@ -38,12 +38,11 @@ if __name__ == '__main__':
     parser.add_argument('--n_pitch_shift', default=3, type=int, required=True, help='(default=%(default)s)')
     parser.add_argument('--sr', default=22050, type=int, required=True, help='(default=%(default)s)')
     parser.add_argument('--path_in', default='', type=str, required=True, help='(default=%(default)s)')
-    # parser.add_argument('--n_stretch', default=3, type=int, required=True, help='(default=%(default)s)')
 
     args = parser.parse_args()
 
     base = args.path_in
-    search_path = f"{base}/*.wav"
+    search_path = f"{base}/noised_*.wav"
 
     for file in glob.glob(search_path):
         fn = os.path.basename(file)
@@ -54,14 +53,6 @@ if __name__ == '__main__':
         for steps in np.linspace(-0.125, 0.130, args.n_pitch_shift, endpoint=False):
             pitched = pitch_shift(data, steps)
             p_shift = f"({steps:.3f})pit"
-            if "noised" in file:
-                # for n in np.linspace(0.98, 1.01, args.n_stretch, endpoint=False):
-                #     stretched = time_stretch(pitched, n)
-                #     n_stretch = f"{n:.3f}strc"
-                output_fn = f"{base}/{pattern}_{num}-{p_shift}.wav"
-                librosa.output.write_wav(output_fn, pitched, sr=args.sr)
-                print(output_fn)
-            # else:
-            #     output_fn = f"{base}/{pattern}_{p_shift}-{num}.wav"
-            #     librosa.output.write_wav(output_fn, pitched, sr=22050)
-            #     print(output_fn)
+            output_fn = f"{base}/{pattern}_{num}-{p_shift}.wav"
+            librosa.output.write_wav(output_fn, pitched, sr=args.sr)
+            print(output_fn)
