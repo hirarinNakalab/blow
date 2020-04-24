@@ -29,11 +29,12 @@ def mse(cleaned_file, noised_file):
     score = mean_squared_error(noised_mel, cleaned_mel)
     print(f"{noised_file} => MSE: {score}")
 
-def fix_audio_length(cleaned_path, noised_path, visualize):
-    for noised_file in sorted(glob.glob(noised_path + "/noised_*.wav")):
-        cleaned_file = os.path.basename(noised_file).replace("tgt_", "").replace(".wav", "")
-        cleaned_file = f"{cleaned_path}/{cleaned_file}_to_raw.wav"
-        noised, sr = librosa.load(noised_file)
+def fix_audio_length(path_in, path_compare, visualize=False):
+    for noised_file in sorted(glob.glob(path_compare + "/noised_*.wav")):
+        cleaned_file = os.path.basename(noised_file)
+        cleaned_file = cleaned_file.replace("tgt_", "").replace(".wav", "")
+        cleaned_file = f"{path_in}/{cleaned_file}_to_raw.wav"
+        noised, sr = librosa.load(noised_file, sr=sr)
         t_size = len(noised)
         amp = np.max(np.abs(noised))
         cleaned, sr = librosa.load(cleaned_file)
@@ -47,18 +48,15 @@ def fix_audio_length(cleaned_path, noised_path, visualize):
             plt.show()
             plt.close()
 
-def wav_to_mel(noised_path):
-    data_path = "./res/audio"
-    submit_path = "submit"
-
-    for noised_file in sorted(glob.glob(noised_path + "/*.npy")):
+def wav_to_mel(path_in, path_npy):
+    for noised_file in sorted(glob.glob(path_npy + "/*.npy")):
         fn = os.path.basename(noised_file).split('_')[2].replace(".npy", "")
-        cleaned_fn = f"{data_path}/noised_{fn}_to_raw.wav"
+        cleaned_fn = f"{path_in}/noised_{fn}_to_raw.wav"
         y, sr = librosa.load(cleaned_fn)
         mel = librosa.feature.melspectrogram(y)
 
         npy_fn = "_".join(["tgt", fn]) + ".npy"
-        npy_fn = os.path.join(submit_path, npy_fn)
+        npy_fn = os.path.join("submit", npy_fn)
         np.save(file=npy_fn, arr=mel, allow_pickle=False, fix_imports=False)
         print(f"save {npy_fn}")
 
@@ -70,19 +68,17 @@ def save_to_zip():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Preprocessing script')
     parser.add_argument('--visualize', action='store_true')
+    parser.add_argument('--path_in', default='', type=str, required=True, help='(default=%(default)s)')
+    parser.add_argument('--path_compare', default='', type=str, required=True, help='(default=%(default)s)')
+    parser.add_argument('--path_npy', default='', type=str, required=True, help='(default=%(default)s)')
     args = parser.parse_args()
 
-    cleaned_path = "./res/audio"
-    noised_path = "./wav_bck"
-    fix_audio_length(cleaned_path, noised_path, args.visualize)
+    fix_audio_length(args.path_in, args.path_compare, args.visualize)
+    wav_to_mel(args.path_in, args.path_npy)
 
-    noised_path = "dist-data/noised_tgt"
-    wav_to_mel(noised_path=noised_path)
-
-    cleaned_path = "submit"
-    for noised_file in sorted(glob.glob(noised_path + "/*.npy")):
+    for noised_file in sorted(glob.glob(args.path_npy + "/*.npy")):
         fn = os.path.basename(noised_file).replace("noised_", "")
-        cleaned_file = f"{cleaned_path}/{fn}"
+        cleaned_file = f"submit/{fn}"
         mse(cleaned_file, noised_file)
         melspec(cleaned_file, noised_file)
 

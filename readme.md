@@ -13,7 +13,7 @@ Suggested steps are:
 $ pip install -r requirements.txt
 $ python extract_zip.py
 $ python mel_to_audio.py
-$ python resampling.py --method down --path_in wav_dat
+$ python resampling.py --method down --path_in wav_dat # downsampling to 16kHz
 ```
 
 ### Data Augmentation
@@ -26,8 +26,8 @@ $ python data_augmentation.py --path_in down_16k --sr 16000 --n_pitch_shift 3
 To preprocess the audio files:
 ```
 $ cd src
-$ python preprocess.py --path_in ../wav_dat/ --extension .wav --path_out ../dat/ --sr 22050
-$ python ./misc/rename_dataset.py --dataset bannam --path ../dat/
+$ python preprocess.py --path_in ../down_16k/ --extension .wav --path_out ../pt_dat/ --sr 16000
+$ python python rename_dataset.py --dataset bannam --path ../pt_dat/
 ```
 
 ### Training
@@ -35,21 +35,22 @@ $ python ./misc/rename_dataset.py --dataset bannam --path ../dat/
 To train Blow:
 ```
 $ cd src
-$ python train.py --path_data ../dat/ --model blow --multigpu --nepochs 100 --base_fn_out ../res/model/blow --sr 22050
+$ python train.py --path_data ../pt_dat/ --model blow --multigpu --nepochs 100 --base_fn_out ../res/model/blow --sr 16000
 ```
 
 ### Convert 
 
 To synthesize all audio with a given learnt model:
 ```
+$ cd src
 $ bash convert.sh
 ```
 
-### Convert audio in melspectrogram format and save into zip file
+### Convert audio to melspectrogram and save as zip file
 
 After doing this, figure comparing melspectrogram before/after convert.  
 And MSE between those spectrogram is calculated. At last, submit-data.zip will be saved.
 ```
-$ python resampling --method up --path_in res/audio/
-$ python convert_wav_to_mel.py
+$ python resampling.py --method up --path_in res/audio/
+$ python convert_wav_to_mel.py --path_in up_22.05k --path_compare wav_dat --path_npy dist-data/noiset_tgt/
 ```

@@ -231,22 +231,8 @@ if args.load_existing=='':
     losses=None
     # Get model
     print('New {:s} model'.format(args.model))
-    if args.model=='realnvp':
-        from src.models import realnvp as sel_model
-    elif args.model=='glow_wn':
-        from src.models import glow_wn as sel_model
-    elif args.model=='glow':
-        from src.models import glow as sel_model
-    elif args.model=='blow':
-        from src.models import blow as sel_model
-    elif args.model=='blow2':
-        from src.models import blow2 as sel_model
-    elif args.model=='test1':
-        from src.models import test1 as sel_model
-    elif args.model=='test2':
-        from src.models import test2 as sel_model
-    elif args.model=='test3':
-        from src.models import test3 as sel_model
+    if args.model=='blow':
+        from models import blow as sel_model
     model=sel_model.Model(args.nsqueeze,args.nblocks,args.nflows,args.ncha,dataset_train.maxspeakers,args.lchunk)
     utils.print_model_report(model,verbose=1)
 
