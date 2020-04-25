@@ -4,9 +4,9 @@
 
 Suggested steps are:
 
-1. Clone repository.
+1. Clone repository on your home directory (for example `/home/your_name/blow`).
 1. Create a virtualenv environment (you can use the `requirements.txt` file).
-1. Put dist-data.zip to project root directory (for example `blow/dist-data.zip`)
+1. Put dist-data.zip to project root directory (for example `/home/your_name/blow/dist-data.zip`)
 
 ## Set up
 ```
@@ -14,11 +14,11 @@ $ pip install -r requirements.txt
 $ python extract_zip.py
 $ python mel_to_audio.py
 ```  
-if you use JVS Corpus,
+if you use JVS Corpus, please download file from [this link](https://drive.google.com/open?id=19oAw8wWn3Y7z6CKChRdAyGOB9yupL_Xt).  
+Unzip file and put data on your home directory (for example `/home/your_name/jvs_ver1`).  
+After that, do following.
 ```
-$ bash get_jvs.sh 
-$ cd wav_dat
-$ bash unify_sr.sh
+$ python move_jvs_corpus.py
 ```
 
 ### Data Augmentation
@@ -56,7 +56,7 @@ $ bash convert.sh
 After doing this, figures comparing melspectrogram before/after convert will be saved.  
 And MSE between those spectrogram is calculated. Finally, `./submit-data.zip` will be saved.  
 ```
-$ python convert_wav_to_mel.py --path_in 22.05k --path_compare wav_bck --path_npy dist-data/noised_tgt/
+$ python convert_wav_to_mel.py --path_in res/audio/ --path_compare wav_bck --path_npy dist-data/noised_tgt/
 ```
 
 ### Clear Project files
