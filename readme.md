@@ -18,7 +18,7 @@ if you use JVS Corpus, please download file from [this link](https://drive.googl
 Unzip file and put data on your home directory (for example `/home/your_name/jvs_ver1`).  
 After that, do following.
 ```
-$ python move_jvs_corpus.py
+$ python move_jvs_corpus.py --path_out 22.05k
 ```
 
 ### Data Augmentation
