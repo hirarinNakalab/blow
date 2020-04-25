@@ -20,6 +20,11 @@ After that, do following.
 ```
 $ python move_jvs_corpus.py --path_out 22.05k
 ```
+if not, you must do following.
+```
+$ mkdir 22.05k
+$ mv wav_dat/*.wav 22.05k/
+```
 
 ### Data Augmentation
 ```
