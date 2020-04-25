@@ -46,6 +46,7 @@ To train Blow:
 ```
 $ cd src
 $ python train.py --path_data ../pt_dat/ --model blow --multigpu --nepochs 100 --base_fn_out ../res/model/blow --sr 22050
+$ (python train.py --path_data ../pt_dat/ --model blow --multigpu --nepochs 100 --base_fn_out ../res/model/blow --sr 22050 --lchunk 5648)
 ```
 
 ### Convert 
