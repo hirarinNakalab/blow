@@ -13,7 +13,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # search_path = "../japanese_speech_corpus/jvs_ver1/jvs*/parallel100/wav24kHz16bit/VOICEACTRESS100_*.wav"
-    search_path = "../jvs_ver1/jvs*/parallel100/wav24kHz16bit/VOICEACTRESS100_*.wav"
+    search_path = "./jvs_ver1/jvs*/parallel100/wav24kHz16bit/VOICEACTRESS100_*.wav"
     sp_pattern = r'jvs\d+'
     wav_pattern = r'VOICEACTRESS100_\d+.wav'
 
