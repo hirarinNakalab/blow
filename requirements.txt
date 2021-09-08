@@ -10,7 +10,7 @@ llvmlite==0.32.0
 matplotlib==3.2.1
 numba==0.49.0
 numpy==1.18.2
-Pillow==7.1.1
+Pillow==8.3.2
 pycparser==2.20
 pyparsing==2.4.7
 pysptk==0.1.18
